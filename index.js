@@ -20,6 +20,9 @@ async function getTiddies(){
     return tiddies;
 }
 getTiddies().then(async (tiddies) => {
+    let promise = new Promise((resolve, reject) => {
+        setTimeout(() => resolve("готово!"), 1000)
+      });
     for (let i = 0; i < tiddies.length; i++) {
         const element = tiddies[i];
         try {
@@ -28,6 +31,7 @@ getTiddies().then(async (tiddies) => {
             "&chat_id=" + chatID;
             console.log(url);
             await request(url);
+            await promise;
         } catch (error) {
             console.error(error);            
         }
