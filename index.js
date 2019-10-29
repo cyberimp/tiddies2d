@@ -22,8 +22,14 @@ async function getTiddies(){
 getTiddies().then(async (tiddies) => {
     for (let i = 0; i < tiddies.length; i++) {
         const element = tiddies[i];
-        await request("https://api.telegram.org/bot"+ token +
-        "/sendPhoto?chat_id=" + chatID +
-        "&photo=" + encodeURIComponent(element));
+        try {
+            const url = "https://api.telegram.org/bot"+ token +
+            "/sendPhoto?chat_id=" + chatID +
+            "&photo=" + encodeURIComponent(element);
+            console.log(url);
+            await request(url);
+        } catch (error) {
+            console.error(error);            
+        }
     }
 });
