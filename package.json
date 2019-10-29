@@ -4,7 +4,8 @@
   "description": "Bot for finding and posting anime tiddies",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "node ."
   },
   "repository": {
     "type": "git",
