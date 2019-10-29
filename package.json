@@ -1,0 +1,25 @@
+{
+  "name": "tiddies2d",
+  "version": "1.0.0",
+  "description": "Bot for finding and posting anime tiddies",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.heroku.com/tiddies2d.git"
+  },
+  "keywords": [
+    "tiddies",
+    "anime",
+    "telegram"
+  ],
+  "author": "Andrey Kalikin",
+  "license": "MIT",
+  "dependencies": {
+    "danbooru": "^3.1.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
+  }
+}
