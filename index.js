@@ -14,7 +14,7 @@ async function getTiddies(){
     for (let i = 0; i < 5; i++) {
         const index = Math.floor(Math.random() * posts.length);
         const post = posts[index];
-        const url = booru.url(post.file_url);
+        const url = booru.url(post.large_file_url);
         tiddies.push(url.href);
     }
     return tiddies;
