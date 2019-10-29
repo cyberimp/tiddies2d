@@ -24,8 +24,8 @@ getTiddies().then(async (tiddies) => {
         const element = tiddies[i];
         try {
             const url = "https://api.telegram.org/bot"+ token +
-            "/sendPhoto?chat_id=" + chatID +
-            "&photo=" + encodeURIComponent(element);
+            "/sendPhoto?photo=" + encodeURIComponent(element)+
+            "&chat_id=" + chatID;
             console.log(url);
             await request(url);
         } catch (error) {
