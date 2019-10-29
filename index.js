@@ -10,7 +10,7 @@ const chatID = "@tiddies2d";
 async function getTiddies(){
     var tiddies = [];
     const booru = new Danbooru(login + ":" + password);
-    const posts = await booru.posts({ tags: "solo areolae 1girl -loli" });
+    const posts = await booru.posts({ limit: 200, tags: "solo areolae 1girl -loli" });
     for (let i = 0; i < 5; i++) {
         const index = Math.floor(Math.random() * posts.length);
         const post = posts[index];
@@ -20,9 +20,9 @@ async function getTiddies(){
     return tiddies;
 }
 getTiddies().then(async (tiddies) => {
-    let promise = new Promise((resolve, reject) => {
-        setTimeout(() => resolve("готово!"), 1000)
-      });
+    // let promise = new Promise((resolve, reject) => {
+    //     setTimeout(() => resolve("готово!"), 1000)
+    //   });
     for (let i = 0; i < tiddies.length; i++) {
         const element = tiddies[i];
         try {
@@ -31,7 +31,7 @@ getTiddies().then(async (tiddies) => {
             "&chat_id=" + chatID;
             console.log(url);
             await request(url);
-            await promise;
+//            await promise;
         } catch (error) {
             console.error(error);            
         }
