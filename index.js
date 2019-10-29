@@ -11,11 +11,11 @@ async function getTiddies(){
     var tiddies = [];
     const booru = new Danbooru(login + ":" + password);
     var posts =[];
-    var page = await booru.posts({ limit: 200, page: 0, tags: "solo areolae 1girl -loli" });
+    var page = await booru.posts({ limit: 200, page: 0, tags: "solo breasts 1girl -loli score:>50" });
     posts.push(...page);
-    page = await booru.posts({ limit: 200, page: 1, tags: "solo areolae 1girl -loli" });
+    page = await booru.posts({ limit: 200, page: 1, tags: "solo breasts 1girl -loli score:>50" });
     posts.push(...page);
-    page = await booru.posts({ limit: 200, page: 2, tags: "solo areolae 1girl -loli" });
+    page = await booru.posts({ limit: 200, page: 2, tags: "solo breasts 1girl -loli score:>50" });
     posts.push(...page);
     for (let i = 0; i < 5; i++) {
         const index = Math.floor(Math.random() * posts.length);
