@@ -10,7 +10,13 @@ const chatID = "@tiddies2d";
 async function getTiddies(){
     var tiddies = [];
     const booru = new Danbooru(login + ":" + password);
-    const posts = await booru.posts({ limit: 200, tags: "solo areolae 1girl -loli" });
+    var posts =[];
+    var page = await booru.posts({ limit: 200, page: 0, tags: "solo areolae 1girl -loli" });
+    posts.push(page);
+    page = await booru.posts({ limit: 200, page: 1, tags: "solo areolae 1girl -loli" });
+    posts.push(page);
+    page = await booru.posts({ limit: 200, page: 2, tags: "solo areolae 1girl -loli" });
+    posts.push(page);
     for (let i = 0; i < 5; i++) {
         const index = Math.floor(Math.random() * posts.length);
         const post = posts[index];
