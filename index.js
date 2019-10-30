@@ -23,6 +23,7 @@ async function getTiddies(){
         const url = booru.url(post.large_file_url);
         tiddies.push(url.href);
     }
+    console.log(posts[0]);
     return tiddies;
 }
 getTiddies().then(async (tiddies) => {
