@@ -23,7 +23,7 @@ async function getTiddies(){
         const url = booru.url(post.large_file_url);
         tiddies.push(url.href);
     }
-    var artist = await booru.get('/artists/'+posts[0].tag_string_artist+'.json');
+    var artist = await booru.get('/artists', {search: {id: posts[0].tag_string_artist}});
     console.log(artist);
     return tiddies;
 }
