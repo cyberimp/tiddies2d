@@ -22,9 +22,9 @@ async function getTiddies(){
         const post = posts[index];
         const url = booru.url(post.large_file_url);
         tiddies.push(url.href);
+        var artist = await booru.get('/artists', {search: {id: post.tag_string_artist}});
+        console.log(artist);
     }
-    var artist = await booru.get('/artists', {search: {id: posts[0].tag_string_artist}});
-    console.log(artist);
     return tiddies;
 }
 getTiddies().then(async (tiddies) => {
