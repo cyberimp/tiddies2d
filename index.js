@@ -34,7 +34,7 @@ async function getTiddies(){
                 post = posts[index];
                 let query = "SELECT id FROM antibayan WHERE id =" + post.id + ";";
                 res = await client.query(query);
-            } while (res.rows.length < 1);
+            } while (res.rows.length > 0);
 //        const url = booru.url(post.large_file_url);
             tiddies.push(post);
             let query = "INSERT INTO antibayan(id,posted_at) VALUES(" + post.id + ",NOW());";
