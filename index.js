@@ -59,8 +59,10 @@ getTiddies().then(async (tiddies) => {
             const url = "https://api.telegram.org/bot"+ token +
                 "/sendPhoto?photo=" + encodeURIComponent(element.large_file_url)+
                 "&caption=" + encodeURIComponent("*Artist:* `" + element.tag_string_artist+"`\n"+
-                                                "*Origin:* `"+ element.tag_string_copyright+"`\n"+
-                                                "*Character:* `"+ element.tag_string_character+"`")+
+                                                "*Origin:* `"+ element.tag_string_copyright.replace(/ /g,"\n")
+                                                        .replace(/_/g," ")+"`\n"+
+                                                "*Character:* `"+ element.tag_string_character.replace(/ /g,"\n")
+                                                        .replace(/_/g," ")+"`")+
                 "&parse_mode=Markdown" +
                 "&chat_id=" + chatID;
             console.log(url);
