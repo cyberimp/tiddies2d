@@ -61,9 +61,9 @@ getTiddies().then(async (tiddies) => {
                 "&caption=" + encodeURIComponent("*Artist:* `" + element.tag_string_artist+"`\n"+
                                                 "*Origin:* `"+ element.tag_string_copyright.replace(/ /g,"\n")
                                                         .replace(/_/g," ")+"`\n"+
-                                                (element.tag_string_character !== "")?
+                                                ((element.tag_string_character !== "")?
                                                     "*Character:* `"+ element.tag_string_character.replace(/ /g,"\n")
-                                                        .replace(/_/g," "):""
+                                                        .replace(/_/g," "):"")
                                                 +"`")+
                 "&parse_mode=Markdown" +
                 "&chat_id=" + chatID;
