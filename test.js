@@ -9,7 +9,7 @@ async function getTiddies(){
     let tiddies = [];
     const booru = new Danbooru(login + ":" + password);
     let posts =[];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 6; i++) {
         const page = await booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" });
         posts.push(...page);
     }
