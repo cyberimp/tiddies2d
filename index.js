@@ -28,14 +28,13 @@ async function getTiddies(){
     try {
         for (let i = 0; i < 5; i++) {
             let post;
+            let res;
             do {
                 const index = Math.floor(Math.random() * posts.length);
                 post = posts[index];
-            } while (async () => {
                 let query = "SELECT id FROM antibayan WHERE id =" + post.id + ";";
-                let res = await client.query(query);
-                return (res.rows.length < 1);
-            });
+                res = await client.query(query);
+            } while (res.rows.length < 1);
 //        const url = booru.url(post.large_file_url);
             tiddies.push(post);
             let query = "INSERT INTO antibayan(id,posted_at) VALUES(" + post.id + ",NOW());";
