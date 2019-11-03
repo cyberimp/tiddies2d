@@ -85,7 +85,11 @@ getTiddies().then(async (tiddies) => {
                 "&parse_mode=Markdown" +
                 "&chat_id=" + chatID;
             console.log(url);
-            await request(url);
+            request(url).then(res => {
+                console.log(res)
+            }, err => {
+                console.error(err)
+            });
 //            await promise;
         } catch (error) {
             console.error(error);
