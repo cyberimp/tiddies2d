@@ -19,6 +19,11 @@ async function getTiddies(){
     for (let i=0; i<promices.length; i++){
         await promices[i];
     }
+    console.log("kto prochel");
+
+    await setTimeout(()=> {return Promise.resolve()}, 2000);
+
+    console.log("tot loh!");
     promices = [];
     for (let i = 20; i < 40; i++) {
         promices.push(booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
