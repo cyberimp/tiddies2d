@@ -21,13 +21,13 @@ async function getTiddies(){
     }
     console.log("kto prochel");
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     console.log("tot loh!");
     promices = [];
     for (let i = 20; i < 40; i++) {
         promices.push(booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
-            .then(result => {posts.push(...result)}).catch(error => {console.error(error)}));
+            .then(result => {posts.push(...result)}).catch(error => {console.error(error);i = 40}));
     }
 
     for (let i=0; i<promices.length; i++){
