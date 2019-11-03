@@ -25,7 +25,7 @@ async function getTiddies() {
         let promises = [];
 
         for (let i = j * 20; i < (j + 1) * 20; i++) {
-            promises.push(booru.posts({limit: 200, page: i, tags: "solo gif breasts 1girl -loli score:>50"})
+            promises.push(booru.posts({limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50"})
                 .then(result => {
                     if (Array.isArray(result))
                         posts.push(...result);
