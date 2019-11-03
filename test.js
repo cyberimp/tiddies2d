@@ -11,7 +11,7 @@ async function getTiddies(){
     let posts = [];
     let promices = [];
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 50; i++) {
         promices.push(booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
             .then((result) => {posts.push(...result)}));
     }
