@@ -27,7 +27,8 @@ async function getTiddies() {
         for (let i = j * 20; i < (j + 1) * 20; i++) {
             promises.push(booru.posts({limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50"})
                 .then(result => {
-                    posts.push(...result);
+                    if (Array.isArray(result))
+                        posts.push(...result);
                 }).catch(error => {
                     console.error(error);
                 }));
@@ -72,7 +73,7 @@ getTiddies().then(async (tiddies) => {
         try {
             let extension = element.large_file_url.split(".").pop();
             let command = "Photo?photo";
-            if (extension === "webm")
+            if (extension === "mp4"|| extension === "gif")
                 command = "Video?video";
             const url = "https://api.telegram.org/bot" + token +
                 "/send" + command + "=" + encodeURIComponent(element.large_file_url) +
