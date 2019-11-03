@@ -21,18 +21,20 @@ async function getTiddies(){
     }
     console.log("kto prochel");
 
-    await setTimeout(()=> {return Promise.resolve()}, 2000);
+    await setTimeout(async()=> {
+        console.log("tot loh!");
+        promices = [];
+        for (let i = 20; i < 40; i++) {
+            promices.push(booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
+                .then(result => {posts.push(...result)}).catch(error => {console.error(error)}));
+        }
 
-    console.log("tot loh!");
-    promices = [];
-    for (let i = 20; i < 40; i++) {
-        promices.push(booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
-            .then(result => {posts.push(...result)}).catch(error => {console.error(error)}));
-    }
+        for (let i=0; i<promices.length; i++){
+            await promices[i];
+        }
+        return Promise.resolve();
+    }, 2000);
 
-    for (let i=0; i<promices.length; i++){
-        await promices[i];
-    }
 
     console.log("array length:",posts.length);
     console.log("first post format:", posts[0]);
