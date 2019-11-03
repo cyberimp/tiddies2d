@@ -8,10 +8,16 @@ const password = process.env.BOORU_KEY;
 async function getTiddies(){
     let tiddies = [];
     const booru = new Danbooru(login + ":" + password);
-    let posts =[];
-    for (let i = 0; i < 6; i++) {
-        const page = await booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" });
-        posts.push(...page);
+    let posts = [];
+    let promices = [];
+
+    for (let i = 0; i < 20; i++) {
+        promices.push(booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
+            .then((result) => {posts.push(...result)}));
+    }
+
+    for (let i=0; i<promices.length; i++){
+        await promices[i];
     }
     console.log("array length:",posts.length);
     console.log("first post format:", posts[0]);
