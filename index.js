@@ -65,9 +65,6 @@ async function getTiddies() {
 }
 
 getTiddies().then(async (tiddies) => {
-    // let promise = new Promise((resolve, reject) => {
-    //     setTimeout(() => resolve("готово!"), 1000)
-    //   });
     for (let i = 0; i < tiddies.length; i++) {
         const element = tiddies[i];
         try {
