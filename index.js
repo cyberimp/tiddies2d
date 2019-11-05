@@ -1,54 +1,51 @@
-'use strict';
+"use strict";
 let Danbooru;
-Danbooru = require('danbooru');
-const request = require('request-promise-native');
-const querystring = require('querystring');
-const {Client} = require('pg');
-
+Danbooru = require("danbooru");
+const request = require("request-promise-native");
+const querystring = require("querystring");
+const { Client } = require("pg");
 
 const login = process.env.BOORU_LOGIN;
 const password = process.env.BOORU_KEY;
 const token = process.env.TG_TOKEN;
 const chatID = "@tiddies2d";
 
-function containsObject(obj, list) {
-    for (let i = 0; i < list.length; i++) {
-        if (list[i] === obj) {
-            return true;
+function containsObject (obj, list) {
+    let result = false;
+    list.forEach((elem) => {
+        if (elem === obj) {
+            result = true;
         }
-    }
-    return false;
+    });
+    return result;
 }
 
-async function getTiddies() {
+async function getTiddies () {
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
-        ssl: true,
+        ssl: true
     });
-    let tiddies = [];
+    const tiddies = [];
     const booru = new Danbooru(login + ":" + password);
 
     client.connect();
 
-    let posts = [];
+    const posts = [];
     for (let j = 0; j < 2; j++) {
-        let promises = [];
+        const promises = [];
 
         for (let i = j * 20; i < (j + 1) * 20; i++) {
-            promises.push(booru.posts({limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50"})
+            promises.push(booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
                 .then(result => {
-                    if (Array.isArray(result))
-                        posts.push(...result);
+                    if (Array.isArray(result)) { posts.push(...result); }
                 }).catch(error => {
                     console.error(error);
                 }));
         }
+        //we need to wait at least 1 sec between API calls
+        promises.push(new Promise(resolve => setTimeout(resolve, 1000)));
 
-        for (let i = 0; i < promises.length; i++) {
-            await promises[i];
-        }
-
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await Promise.all(promises);
     }
 
     try {
@@ -58,10 +55,9 @@ async function getTiddies() {
             do {
                 const index = Math.floor(Math.random() * posts.length);
                 post = posts[index];
-                let query = "SELECT id FROM antibayan WHERE id =" + post.id + ";";
-                res = await client.query(query);
-            } while (res.rows.length > 0 || containsObject(post,tiddies));
-//        const url = booru.url(post.large_file_url);
+                const query = "SELECT id FROM antibayan WHERE id = $1;";
+                res = await client.query(query, [post.id]);
+            } while (res.rows.length > 0 || containsObject(post, tiddies));
             tiddies.push(post);
         }
     } catch (error) {
@@ -72,74 +68,74 @@ async function getTiddies() {
     return tiddies;
 }
 
-function clearUnderscore(str) {
-    return str.replace(/ /g, "\n").replace(/_/g, " ")
+function clearUnderscore (str) {
+    return str.replace(/ /g, "\n").replace(/_/g, " ");
 }
 
-async function addTiddies(post) {
+async function addTiddies (post) {
     const postID = post.id;
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
-        ssl: true,
+        ssl: true
     });
     client.connect();
-    let query = "INSERT INTO antibayan(id,posted_at) VALUES($1,NOW());";
+    const query = "INSERT INTO antibayan(id,posted_at) VALUES($1,NOW());";
+    /** @namespace result.rowCount **/
     client.query(query, [postID]).then(result => {
         console.log(result.rowCount);
     }, err => {
-        console.error(err)
+        console.error(err);
     }).finally(() => {
         client.end();
     });
     return Promise.resolve();
 }
 
-async function postTiddies(post) {
+/**
+ * @param {{large_file_url:string},
+ *          {tag_string_artist:string},
+ *          {tag_string_copyright:string},
+ *          {tag_string_character:string}} post
+ */
+function postTiddies (post) {
     const postUrl = post.large_file_url;
     const postArtist = post.tag_string_artist;
     const postCopyright = post.tag_string_copyright;
     const postCharacter = post.tag_string_character;
     const extension = postUrl.split(".").pop();
     let command = "Photo";
-    if (extension === "mp4" || extension === "gif")
-        command = "Video";
+    if (extension === "mp4" || extension === "gif") { command = "Video"; }
 
-    let paramsObj = {};
+    const paramsObj = {};
     paramsObj[command.toLowerCase()] = postUrl;
     paramsObj.caption = "*Artist:* `" + clearUnderscore(postArtist) + "`\n" +
-        "*Origin:* `" + clearUnderscore(postCopyright) + "`" +
-        ((postCharacter !== "") ?
-            "\n*Character:* `" + clearUnderscore(postCharacter) + "`"
-            : "");
+		"*Origin:* `" + clearUnderscore(postCopyright) + "`" +
+		((postCharacter !== "") ? "\n*Character:* `" + clearUnderscore(postCharacter) + "`" : "");
     paramsObj.parse_mode = "Markdown";
     paramsObj.chat_id = chatID;
-    let params = querystring.stringify(paramsObj);
+    const params = querystring.stringify(paramsObj);
     const url = "https://api.telegram.org/bot" + token +
-        "/send" + command + "?" + params;
+		"/send" + command + "?" + params;
     console.log(url);
-    return request(url).then(res => {
-        let parsed = JSON.parse(res);
+    request(url).then(res => {
+        const parsed = JSON.parse(res);
         if (parsed.ok === true) {
-            addTiddies(post);
-        }
-        else {
+            addTiddies(post).then(()=>{
+                console.log("posted 1");
+            });
+        } else {
             console.error("not added!");
             console.log(res);
         }
     });
 }
 
-getTiddies().then(async (tiddies) => {
-    for (let i = 0; i < tiddies.length; i++) {
-        const element = tiddies[i];
+getTiddies().then((tiddies) => {
+    tiddies.forEach((pair)=> {
         try {
-            postTiddies(element).then(res => {
-                console.log(res)
-            }, err => {
-                console.error(err)
-            });
+            postTiddies(pair);
         } catch (error) {
             console.error(error);
         }
-    }
+    });
 });
