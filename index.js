@@ -50,23 +50,18 @@ async function getTiddies () {
         await Promise.all(promises);
     }
 
-    try {
-        for (let i = 0; i < 5; i++) {
-            let post;
-            let res;
-            do {
-                const index = Math.floor(Math.random() * posts.length);
-                post = posts[index];
-                const query = "SELECT id FROM antibayan WHERE id = $1;";
-                res = await client.query(query, [post.id]);
-            } while (res.rows.length > 0 || containsObject(post, tiddies));
-            tiddies.push(post);
-        }
-    } catch (error) {
-        console.error(error);
-    } finally {
-        client.end();
+    for (let i = 0; i < 5; i++) {
+        let post;
+        let res;
+        do {
+            const index = Math.floor(Math.random() * posts.length);
+            post = posts[index];
+            const query = "SELECT id FROM antibayan WHERE id = $1;";
+            res = await client.query(query, [post.id]);
+        } while (res.rows.length > 0 || containsObject(post, tiddies));
+        tiddies.push(post);
     }
+    client.end();
     return tiddies;
 }
 
