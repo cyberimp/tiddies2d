@@ -82,7 +82,7 @@ async function addTiddies(post) {
         connectionString: process.env.DATABASE_URL,
         ssl: true,
     });
-    await client.connect();
+    client.connect();
     let query = "INSERT INTO antibayan(id,posted_at) VALUES($1,NOW());";
     client.query(query, [postID]).then(result => {
         console.log(result.rows[0]);
