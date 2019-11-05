@@ -119,7 +119,10 @@ async function postTiddies(post) {
     console.log(url);
     return request(url).then(res => {
         if (res.ok) {
-            addTiddies(post).then();
+            addTiddies(post);
+        }
+        else {
+            console.log(res);
         }
     });
 }
