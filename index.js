@@ -31,7 +31,8 @@ async function getTiddies () {
     client.connect();
 
     const posts = [];
-    for (let j = 0; j < 2; j++) {
+    const MAX = 2;
+    for (let j = 0; j < MAX; j++) {
         const promises = [];
 
         for (let i = j * 20; i < (j + 1) * 20; i++) {
@@ -42,8 +43,9 @@ async function getTiddies () {
                     console.error(error);
                 }));
         }
-        //we need to wait at least 1 sec between API calls
-        promises.push(new Promise(resolve => setTimeout(resolve, 1000)));
+        //we need to wait at least 1 sec between API calls, but not on last call
+        if (j < MAX - 1)
+            promises.push(new Promise(resolve => setTimeout(resolve, 1000)));
 
         await Promise.all(promises);
     }
@@ -82,7 +84,7 @@ async function addTiddies (post) {
     const query = "INSERT INTO antibayan(id,posted_at) VALUES($1,NOW());";
     /** @namespace result.rowCount **/
     client.query(query, [postID]).then(result => {
-        console.log(result.rowCount);
+        console.log("added rows: ",result.rowCount);
     }, err => {
         console.error(err);
     }).finally(() => {
