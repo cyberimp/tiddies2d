@@ -118,7 +118,8 @@ async function postTiddies(post) {
         "/send" + command + "?" + params;
     console.log(url);
     return request(url).then(res => {
-        if (res["ok"] === true) {
+        let parsed = JSON.parse(res);
+        if (parsed.ok === true) {
             addTiddies(post);
         }
         else {
