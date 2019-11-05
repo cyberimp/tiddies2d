@@ -94,7 +94,7 @@ async function addTiddies(post) {
     return Promise.resolve();
 }
 
-function postTiddies(post) {
+async function postTiddies(post) {
     const postUrl = post.large_file_url;
     const postArtist = post.tag_string_artist;
     const postCopyright = post.tag_string_copyright;
@@ -117,7 +117,7 @@ function postTiddies(post) {
     const url = "https://api.telegram.org/bot" + token +
         "/send" + command + "?" + params;
     console.log(url);
-    request(url).then(res => {
+    return request(url).then(res => {
         if (res.ok) {
             addTiddies(post).then();
         }
