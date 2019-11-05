@@ -118,10 +118,11 @@ async function postTiddies(post) {
         "/send" + command + "?" + params;
     console.log(url);
     return request(url).then(res => {
-        if (res.ok == "true") {
+        if (res["ok"] === true) {
             addTiddies(post);
         }
         else {
+            console.error("not added!");
             console.log(res);
         }
     });
