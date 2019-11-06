@@ -80,7 +80,7 @@ function addTiddies (post) {
     /** @namespace result.rowCount **/
     client.query(query, [postID]).then(result => {
         console.log("added rows: ",result.rowCount);
-    }, console.error).finally(client.end);
+    }, console.error).finally(() => {client.end();});
 }
 
 /**
@@ -90,7 +90,7 @@ function addTiddies (post) {
  *          {tag_string_character:string}} post
  */
 function postTiddies (post) {
-    const postUrl = post.large_file_url;
+    const postUrl = post.large_file_url+"corrupted";
     const postArtist = post.tag_string_artist;
     const postCopyright = post.tag_string_copyright;
     const postCharacter = post.tag_string_character;
