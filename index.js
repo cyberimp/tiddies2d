@@ -80,11 +80,7 @@ function addTiddies (post) {
     /** @namespace result.rowCount **/
     client.query(query, [postID]).then(result => {
         console.log("added rows: ",result.rowCount);
-    }, err => {
-        console.error(err);
-    }).finally(() => {
-        client.end();
-    });
+    }, console.error).finally(client.end);
 }
 
 /**
@@ -121,9 +117,7 @@ function postTiddies (post) {
             console.error("not added!");
             console.log(res);
         }
-    }).catch((err) => {
-        console.error(err);
-    });
+    }).catch(console.log);
 }
 
 getTiddies().then((tiddies) => {
