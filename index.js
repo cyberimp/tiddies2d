@@ -69,7 +69,7 @@ function clearUnderscore (str) {
     return str.replace(/ /g, "\n").replace(/_/g, " ");
 }
 
-async function addTiddies (post) {
+function addTiddies (post) {
     const postID = post.id;
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
@@ -85,7 +85,6 @@ async function addTiddies (post) {
     }).finally(() => {
         client.end();
     });
-    return Promise.resolve();
 }
 
 /**
@@ -117,9 +116,7 @@ function postTiddies (post) {
     request(url).then(res => {
         const parsed = JSON.parse(res);
         if (parsed.ok) {
-            addTiddies(post).then(()=>{
-                console.log("posted 1");
-            });
+            addTiddies(post);
         } else {
             console.error("not added!");
             console.log(res);
@@ -128,11 +125,5 @@ function postTiddies (post) {
 }
 
 getTiddies().then((tiddies) => {
-    tiddies.forEach((pair)=> {
-        try {
-            postTiddies(pair);
-        } catch (error) {
-            console.error(error);
-        }
-    });
+    tiddies.forEach(postTiddies);
 });
