@@ -116,7 +116,7 @@ function postTiddies (post) {
     console.log(url);
     request(url).then(res => {
         const parsed = JSON.parse(res);
-        if (parsed.ok === true) {
+        if (parsed.ok) {
             addTiddies(post).then(()=>{
                 console.log("posted 1");
             });
