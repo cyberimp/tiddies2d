@@ -121,6 +121,8 @@ function postTiddies (post) {
             console.error("not added!");
             console.log(res);
         }
+    }).catch((err) => {
+        console.error(err);
     });
 }
 
