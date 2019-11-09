@@ -8,7 +8,7 @@ const { Client } = require("pg");
 const login = process.env.BOORU_LOGIN;
 const password = process.env.BOORU_KEY;
 const token = process.env.TG_TOKEN;
-const chatID = "@tiddies2d";
+const chatID =  "@"+process.env.TG_CHAT;
 
 function containsObject (obj, list) {
     let result = false;
