@@ -36,12 +36,17 @@ async function getTiddies () {
         const promises = [];
 
         for (let i = j * 20; i < (j + 1) * 20; i++) {
-            promises.push(booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
-                .then(result => {
-                    if (Array.isArray(result)) { posts.push(...result); }
-                }).catch(error => {
-                    console.error(error);
-                }));
+            promises.push(
+                booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
+                    .then(
+                        result => {
+                            if (Array.isArray(result)) {
+                                posts.push(...result);
+                            }
+                        },
+                        error => console.error(error)
+                    )
+            );
         }
         //we need to wait at least 1 sec between API calls, but not on last call
         if (j < MAX - 1)
@@ -78,9 +83,10 @@ function addTiddies (post) {
     client.connect();
     const query = "INSERT INTO antibayan(id,posted_at) VALUES($1,NOW());";
     /** @namespace result.rowCount **/
-    client.query(query, [postID]).then(result => {
-        console.log("added rows: ",result.rowCount);
-    }, console.error).finally(() => {client.end();});
+    client.query(query, [postID]).then(
+        result => console.log("added rows: " + result.rowCount),
+        err => console.error(err)
+    ).finally(() => client.end());
 }
 
 /**
@@ -117,9 +123,8 @@ function postTiddies (post) {
             console.error("not added!");
             console.log(res);
         }
-    }).catch(console.log);
+    }).catch((err) => console.error(err));
 }
 
-getTiddies().then((tiddies) => {
-    tiddies.forEach(postTiddies);
-});
+getTiddies().then((tiddies) =>
+    tiddies.forEach(postTiddies));
