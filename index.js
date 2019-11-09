@@ -114,7 +114,7 @@ function postTiddies (post) {
     const params = querystring.stringify(paramsObj);
     const url = "https://api.telegram.org/bot" + token +
 		"/send" + command + "?" + params;
-    console.log(url);
+    console.log(url.replace(token,"API_TOKEN"));
     request(url).then(res => {
         const parsed = JSON.parse(res);
         if (parsed.ok) {
