@@ -12,6 +12,6 @@ client.query("SELECT * FROM antibayan ORDER BY posted_at")
             let del = await client.query("DELETE FROM antibayan WHERE ctid IN (SELECT ctid FROM antibayan ORDER BY posted_at ASC LIMIT $1);",[lines]);
             console.log(del);
             await client.query("VACUUM;");
-            client.end();
         }
+        client.end();
     });
