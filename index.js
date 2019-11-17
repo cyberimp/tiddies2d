@@ -9,7 +9,6 @@ const login = process.env.BOORU_LOGIN;
 const password = process.env.BOORU_KEY;
 const token = process.env.TG_TOKEN;
 const chatID =  "@"+process.env.TG_CHAT;
-const table = process.env.DB_TABLE;
 
 function containsObject (obj, list) {
     let result = false;
@@ -62,8 +61,8 @@ async function getTiddies () {
         do {
             const index = Math.floor(Math.random() * posts.length);
             post = posts[index];
-            const query = "SELECT id FROM $1 WHERE id = $2;";
-            res = await client.query(query, [table, post.id]);
+            const query = "SELECT id FROM antibayan WHERE id = $1;";
+            res = await client.query(query, [post.id]);
         } while (res.rows.length > 0 || containsObject(post, tiddies));
         tiddies.push(post);
     }
@@ -82,9 +81,9 @@ function addTiddies (post) {
         ssl: true
     });
     client.connect();
-    const query = "INSERT INTO $1(id,posted_at) VALUES($2,NOW());";
+    const query = "INSERT INTO antibayan(id,posted_at) VALUES($1,NOW());";
     /** @namespace result.rowCount **/
-    client.query(query, [table, postID]).then(
+    client.query(query, [postID]).then(
         result => console.log("added rows: " + result.rowCount),
         err => console.error(err)
     ).finally(() => client.end());
