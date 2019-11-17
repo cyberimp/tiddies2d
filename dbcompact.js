@@ -9,9 +9,9 @@ client.query("SELECT * FROM antibayan ORDER BY posted_at")
         const total = res.rowCount;
         if (total > 5000){
             const lines = total - 4000;
-            let del = await client.query("DELETE FROM antibayan WHERE ctid IN (SELECT ctid FROM antibayan ORDER BY posted_at ASC LIMIT $1) ",[lines]);
+            let del = await client.query("DELETE FROM antibayan WHERE ctid IN (SELECT ctid FROM antibayan ORDER BY posted_at ASC LIMIT $1);",[lines]);
             console.log(del);
-            await client.query("VACUUM");
+            await client.query("VACUUM;");
             client.end();
         }
     });
