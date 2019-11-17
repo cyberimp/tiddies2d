@@ -9,7 +9,7 @@ client.query("SELECT * FROM antibayan ORDER BY posted_at")
         const total = res.rowCount;
         if (total > 5000){
             const lines = total - 1000;
-            let del = client.query("SELECT * FROM antibayan ORDER BY posted_at ASC LIMIT $1");
-            consol
+            let del = client.query("SELECT * FROM antibayan ORDER BY posted_at ASC LIMIT $1",[lines]);
+            console.log(del);
         }
     });
