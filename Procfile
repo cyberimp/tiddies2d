@@ -1,2 +1,2 @@
 worker: npm run start
-dbcompact: npm run dbcompact
+dbcompact: npm run compact
