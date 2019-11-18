@@ -10,8 +10,12 @@ client.query("SELECT * FROM antibayan ORDER BY posted_at")
         if (total > 5000){
             const lines = total - 4000;
             let del = await client.query("DELETE FROM antibayan WHERE ctid IN (SELECT ctid FROM antibayan ORDER BY posted_at ASC LIMIT $1);",[lines]);
-            console.log(del);
+            console.log(`deleted ${lines} first lines`);
             await client.query("VACUUM;");
+        }
+	else
+	{
+            console.log("nothing to delete");
         }
         client.end();
     });
