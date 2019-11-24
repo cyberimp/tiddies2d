@@ -48,14 +48,13 @@ async function getTiddies () {
                     )
             );
         }
-        //we need to wait at least 1 sec between API calls, but not on last call
-        if (j < MAX - 1)
-            promises.push(new Promise(resolve => setTimeout(resolve, 1000)));
+        //we need to wait at least 1 sec between API calls
+        promises.push(new Promise(resolve => setTimeout(resolve, 1000)));
 
         await Promise.all(promises);
     }
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 2; i++) {
         let post;
         let res;
         do {
