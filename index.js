@@ -13,11 +13,17 @@ const chatID =  "@"+process.env.TG_CHAT;
 function containsObject (obj, list) {
     let result = false;
     list.forEach((elem) => {
-        if (elem === obj) {
+        if (elem.id === obj.id) {
             result = true;
         }
     });
     return result;
+}
+
+function badExtension(str){
+    const good = ["gif", "jpg", "jpeg", "png", "mp4"];
+    const ext = str.split(".").pop();
+    return (!good.includes(ext));
 }
 
 async function getTiddies () {
@@ -54,15 +60,15 @@ async function getTiddies () {
         await Promise.all(promises);
     }
 
-    for (let i = 0; i < 2; i++) {
-        let post;
+    for (let i = 0; i < 1; i++) {
+        let post = {large_file_url: ""};
         let res;
         do {
             const index = Math.floor(Math.random() * posts.length);
             post = posts[index];
             const query = "SELECT id FROM antibayan WHERE id = $1;";
             res = await client.query(query, [post.id]);
-        } while (res.rows.length > 0 || containsObject(post, tiddies));
+        } while (res.rows.length > 0 || containsObject(post, tiddies) || badExtension(post.large_file_url));
         tiddies.push(post);
     }
     client.end();
