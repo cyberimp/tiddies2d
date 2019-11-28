@@ -58,7 +58,7 @@ async function getTiddies (num, antibayan = true) {
             );
         }
         //we need to wait at least 1 sec between API calls
-        promises.push(new Promise(resolve => setTimeout(resolve, 500)));
+        promises.push(new Promise(resolve => setTimeout(resolve, 400)));
 
         await Promise.all(promises);
     }
