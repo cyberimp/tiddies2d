@@ -60,6 +60,8 @@ async function getTiddies (num, antibayan = true) {
         await Promise.all(promises);
     }
 
+    console.log(`found ${posts.length} pairs!`);
+
     for (let i = 0; i < num; i++) {
         let post = {large_file_url: ""};
         let res;
