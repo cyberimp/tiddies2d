@@ -49,6 +49,9 @@ async function getTiddies (num, antibayan = true) {
                             if (Array.isArray(result)) {
                                 posts.push(...result);
                             }
+                            else{
+                                console.log(result);
+                            }
                         },
                         error => console.error(error)
                     )
