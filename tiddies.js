@@ -37,7 +37,7 @@ async function getTiddies (num, antibayan = true) {
         client.connect();
 
     const posts = [];
-    const MAX = 4;
+    const MAX = 3;
     for (let j = 0; j < MAX; j++) {
         const promises = [];
 
