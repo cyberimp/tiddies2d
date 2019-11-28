@@ -77,7 +77,7 @@ async function getTiddies (num, antibayan = true, cache = false) {
         }
         if (cache){
             try {
-                fs.writeFile("cache.dat", JSON.stringify(posts),{mode: 0o222}, () =>{
+                fs.writeFile("cache.dat", JSON.stringify(posts),{mode: 0o222, flag: "wx"}, () =>{
                     fs.chmod("cache.dat",0o555, (err) => {
                         if (err)
                             console.error(err);
