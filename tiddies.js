@@ -37,11 +37,11 @@ async function getTiddies (num, antibayan = true) {
         client.connect();
 
     const posts = [];
-    const MAX = 1;
+    const MAX = 4;
     for (let j = 0; j < MAX; j++) {
         const promises = [];
 
-        for (let i = j * 40; i < (j + 1) * 40; i++) {
+        for (let i = j * 10; i < (j + 1) * 10; i++) {
             promises.push(
                 booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
                     .then(
@@ -58,7 +58,7 @@ async function getTiddies (num, antibayan = true) {
             );
         }
         //we need to wait at least 1 sec between API calls
-        //promises.push(new Promise(resolve => setTimeout(resolve, 1000)));
+        promises.push(new Promise(resolve => setTimeout(resolve, 100)));
 
         await Promise.all(promises);
     }
