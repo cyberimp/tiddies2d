@@ -52,7 +52,7 @@ async function getTiddies (num, antibayan = true) {
                                 posts.push(...result);
                             }
                             else{
-                                //console.log(result);
+                                console.log(result);
                             }
                         },
                         error => console.error(error)
