@@ -19,7 +19,7 @@ app.post("/"+token, (req, res)=>{
     res.sendStatus(200);
     if ("message" in req.body && "text" in req.body.message && req.body.message.text.startsWith("/tits")) {
         let chatID = req.body.message.chat.id;
-        tiddies(1, chatID, false);
+        tiddies(1, chatID, false, true);
     }
 });
 

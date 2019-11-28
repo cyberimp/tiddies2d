@@ -1,6 +1,7 @@
 "use strict";
 let Danbooru;
 Danbooru = require("danbooru");
+const fs = require("fs");
 const request = require("request-promise-native");
 const querystring = require("querystring");
 const { Client } = require("pg");
@@ -25,7 +26,7 @@ function badExtension(str){
     return (!good.includes(ext));
 }
 
-async function getTiddies (num, antibayan = true) {
+async function getTiddies (num, antibayan = true, cache = false) {
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
         ssl: true
@@ -38,31 +39,55 @@ async function getTiddies (num, antibayan = true) {
 
     let test = await booru.get("counts/posts", {tags: "solo breasts 1girl -loli score:>50"});
     console.log(test);
-    const posts = [];
+    let posts = [];
     const MAX = 3;
-    for (let j = 0; j < MAX; j++) {
-        const promises = [];
+    let fail = false;
 
-        for (let i = j * 15; i < (j + 1) * 15; i++) {
-            promises.push(
-                booru.posts({ limit: 100, page: i, tags: "solo breasts 1girl -loli score:>50" })
-                    .then(
-                        result => {
-                            if (Array.isArray(result)) {
-                                posts.push(...result);
-                            }
-                            else{
-                                console.log(result);
-                            }
-                        },
-                        error => console.error(error)
-                    )
-            );
+    if (cache)
+        try {
+            const content = fs.readFileSync("cache.dat",{flag: "r", encoding: "utf8"});
+            posts = JSON.parse(content);
         }
-        //we need to wait at least 1 sec between API calls
-        promises.push(new Promise(resolve => setTimeout(resolve, 10)));
+        catch(err){
+            fail = true;
+        }
+    if (!cache||fail) {
+        for (let j = 0; j < MAX; j++) {
+            const promises = [];
 
-        await Promise.all(promises);
+            for (let i = j * 15; i < (j + 1) * 15; i++) {
+                promises.push(
+                    booru.posts({limit: 100, page: i, tags: "solo breasts 1girl -loli score:>50"})
+                        .then(
+                            result => {
+                                if (Array.isArray(result)) {
+                                    posts.push(...result);
+                                } else {
+                                    console.log(result);
+                                }
+                            },
+                            error => console.error(error)
+                        )
+                );
+            }
+            //we need to wait at least 1 sec between API calls
+            promises.push(new Promise(resolve => setTimeout(resolve, 10)));
+
+            await Promise.all(promises);
+        }
+        if (cache){
+            try {
+                fs.writeFile("cache.dat", JSON.stringify(posts),{mode: 0o222}, () =>{
+                    fs.chmod("cache.dat",0o555, (err) => {
+                        if (err)
+                            console.error(err);
+                    });
+                });
+            }
+            catch(err){
+                console.error(err);
+            }
+        }
     }
 
     console.log(`found ${posts.length} pairs!`);
@@ -147,8 +172,8 @@ function postTiddies (post, chatID, add = true) {
     }).catch((err) => console.error(err));
 }
 
-function doJob(num, chatID, antibayan=true){
-    getTiddies(num, antibayan).then((pairs) =>
+function doJob(num, chatID, antibayan= true, cache = false){
+    getTiddies(num, antibayan, cache).then((pairs) =>
         pairs.forEach(post => postTiddies(post, chatID, antibayan)));
 }
 
