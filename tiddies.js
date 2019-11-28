@@ -43,7 +43,7 @@ async function getTiddies (num, antibayan = true) {
     for (let j = 0; j < MAX; j++) {
         const promises = [];
 
-        for (let i = j * 20; i < (j + 1) * 20; i++) {
+        for (let i = j * 15; i < (j + 1) * 15; i++) {
             promises.push(
                 booru.posts({ limit: 100, page: i, tags: "solo breasts 1girl -loli score:>50" })
                     .then(
