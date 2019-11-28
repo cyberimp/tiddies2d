@@ -36,7 +36,7 @@ async function getTiddies (num, antibayan = true) {
     if (antibayan)
         client.connect();
 
-    let test = await booru.get("counts/posts", {tags: "solo breasts 1girl -loli score:>50"});
+    let test = await booru.get("counts/posts", {tags: "solo breasts"});
     console.log(test);
     const posts = [];
     const MAX = 3;
