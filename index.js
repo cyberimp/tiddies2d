@@ -1,135 +1,28 @@
-"use strict";
-let Danbooru;
-Danbooru = require("danbooru");
-const request = require("request-promise-native");
-const querystring = require("querystring");
-const { Client } = require("pg");
-
-const login = process.env.BOORU_LOGIN;
-const password = process.env.BOORU_KEY;
 const token = process.env.TG_TOKEN;
-const chatID =  "@"+process.env.TG_CHAT;
+const port = process.env.PORT;
 
-function containsObject (obj, list) {
-    let result = false;
-    list.forEach((elem) => {
-        if (elem.id === obj.id) {
-            result = true;
-        }
-    });
-    return result;
-}
+const express = require("express");
+const request = require("request");
+const app = express();
+const bodyParser = require("body-parser");
+const tiddies = require("./tiddies");
 
-function badExtension(str){
-    const good = ["gif", "jpg", "jpeg", "png", "mp4"];
-    const ext = str.split(".").pop();
-    return (!good.includes(ext));
-}
+app.use(bodyParser.json());
 
-async function getTiddies () {
-    const client = new Client({
-        connectionString: process.env.DATABASE_URL,
-        ssl: true
-    });
-    const tiddies = [];
-    const booru = new Danbooru(login + ":" + password);
+app.get("/setup", (req, res)=>{
+    request("https://api.telegram.org/bot"+ token +
+     "/setWebhook?url="+encodeURIComponent("https://tiddies2d.herokuapp.com/" + token));
+    res.sendStatus(200);
+});
 
-    client.connect();
-
-    const posts = [];
-    const MAX = 2;
-    for (let j = 0; j < MAX; j++) {
-        const promises = [];
-
-        for (let i = j * 20; i < (j + 1) * 20; i++) {
-            promises.push(
-                booru.posts({ limit: 200, page: i, tags: "solo breasts 1girl -loli score:>50" })
-                    .then(
-                        result => {
-                            if (Array.isArray(result)) {
-                                posts.push(...result);
-                            }
-                        },
-                        error => console.error(error)
-                    )
-            );
-        }
-        //we need to wait at least 1 sec between API calls
-        promises.push(new Promise(resolve => setTimeout(resolve, 1000)));
-
-        await Promise.all(promises);
+app.post("/"+token, (req, res)=>{
+    if ("message" in req.body && req.body.message.text.startsWith("/tits")) {
+        let chatID = req.body.message.chat.id;
+        tiddies(1, chatID, false);
     }
+    res.sendStatus(200);
+});
 
-    for (let i = 0; i < 1; i++) {
-        let post = {large_file_url: ""};
-        let res;
-        do {
-            const index = Math.floor(Math.random() * posts.length);
-            post = posts[index];
-            const query = "SELECT id FROM antibayan WHERE id = $1;";
-            res = await client.query(query, [post.id]);
-        } while (res.rows.length > 0 || containsObject(post, tiddies) || badExtension(post.large_file_url));
-        tiddies.push(post);
-    }
-    client.end();
-    return tiddies;
-}
-
-function clearUnderscore (str) {
-    return str.replace(/ /g, "\n").replace(/_/g, " ");
-}
-
-function addTiddies (post) {
-    const postID = post.id;
-    const client = new Client({
-        connectionString: process.env.DATABASE_URL,
-        ssl: true
-    });
-    client.connect();
-    const query = "INSERT INTO antibayan(id,posted_at) VALUES($1,NOW());";
-    /** @namespace result.rowCount **/
-    client.query(query, [postID]).then(
-        result => console.log("added rows: " + result.rowCount),
-        err => console.error(err)
-    ).finally(() => client.end());
-}
-
-/**
- * @param {{large_file_url:string},
- *          {tag_string_artist:string},
- *          {tag_string_copyright:string},
- *          {tag_string_character:string}} post
- */
-function postTiddies (post) {
-    const postUrl = post.large_file_url;
-    const postArtist = clearUnderscore(post.tag_string_artist);
-    const postCopyright = clearUnderscore(post.tag_string_copyright);
-    const postCharacter = clearUnderscore(post.tag_string_character);
-    const extension = postUrl.split(".").pop();
-    let command = "Photo";
-    if (extension === "mp4" || extension === "gif") { command = "Video"; }
-
-    const paramsObj = {};
-    paramsObj[command.toLowerCase()] = postUrl;
-    paramsObj.caption = "*Artist:* `" + postArtist + "`\n" +
-		"*Origin:* `" + postCopyright + "`" +
-		((postCharacter !== "") ? "\n*Character:* `" + postCharacter + "`" : "");
-    paramsObj.parse_mode = "Markdown";
-    paramsObj.chat_id = chatID;
-    const params = querystring.stringify(paramsObj);
-    const url = "https://api.telegram.org/bot" + token +
-		"/send" + command + "?" + params;
-    console.log(url.replace(token,"API_TOKEN"));
-    request(url).then(res => {
-        const parsed = JSON.parse(res);
-        if (parsed.ok) {
-            addTiddies(post);
-        } else {
-            console.error("not added!");
-            console.log(res);
-        }
-    }).catch((err) => console.error(err));
-}
-
-getTiddies().then((tiddies) =>
-    tiddies.forEach(postTiddies));
+app.listen(port, () => {
+    console.log(`listening for hooks on port ${port}!`);
+});

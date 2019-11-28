@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm test",
     "start": "node .",
-    "compact": "node dbcompact.js"
+    "compact": "node dbcompact.js",
+    "worker": "node worker.js"
   },
   "repository": {
     "type": "git",
@@ -20,13 +21,15 @@
   "author": "Andrey Kalikin",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "danbooru": "^3.1.0",
-    "pg": "^7.12.1",
+    "express": "^4.17.1",
+    "pg": "^7.14.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.8"
   },
   "devDependencies": {
-    "eslint": "^6.6.0",
+    "eslint": "^6.7.1",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
