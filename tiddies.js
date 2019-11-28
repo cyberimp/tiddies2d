@@ -39,13 +39,13 @@ async function getTiddies (num, antibayan = true) {
     let test = await booru.get("counts/posts", {tags: "solo breasts 1girl -loli score:>50"});
     console.log(test);
     const posts = [];
-    const MAX = 10;
+    const MAX = 2;
     for (let j = 0; j < MAX; j++) {
         const promises = [];
 
         for (let i = j * 20; i < (j + 1) * 20; i++) {
             promises.push(
-                booru.posts({ limit: 20, page: i, tags: "solo breasts 1girl -loli score:>50" })
+                booru.posts({ limit: 100, page: i, tags: "solo breasts 1girl -loli score:>50" })
                     .then(
                         result => {
                             if (Array.isArray(result)) {
