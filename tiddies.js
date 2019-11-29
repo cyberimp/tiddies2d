@@ -63,7 +63,7 @@ async function getTiddies (num, antibayan = true, cache = false) {
                                 if (Array.isArray(result)) {
                                     posts.push(...result);
                                 } else {
-                                    console.log(result);
+                                    console.log(result.message);
                                 }
                             },
                             error => { if ("message" in error)
