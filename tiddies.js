@@ -66,7 +66,8 @@ async function getTiddies (num, antibayan = true, cache = false) {
                                     console.log(result);
                                 }
                             },
-                            error => console.error(error)
+                            error => { if ("message" in error)
+					    console.error(error.message);}
                         )
                 );
             }
