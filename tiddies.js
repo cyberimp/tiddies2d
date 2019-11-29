@@ -145,15 +145,15 @@ function postTiddies (post, chatID, add = true) {
     const postArtist = clearUnderscore(post.tag_string_artist);
     const postCopyright = clearUnderscore(post.tag_string_copyright);
     const postCharacter = clearUnderscore(post.tag_string_character);
-    const extension = postUrl.split(".").pop();
+    const extension = postUrl.split(".").pop();:
     let command = "Photo";
     if (extension === "mp4" || extension === "gif") { command = "Video"; }
 
     const paramsObj = {};
     paramsObj[command.toLowerCase()] = postUrl;
-    paramsObj.caption = "*Artist:* `" + postArtist + "`\n" +
-		"*Origin:* `" + postCopyright + "`" +
-		((postCharacter !== "") ? "\n*Character:* `" + postCharacter + "`" : "");
+    paramsObj.caption = `*Artist:* \`${postArtist}\`` +
+		`\n*Origin:* \`${postCopyright}\`` +
+		((postCharacter !== "") ? `\n*Character:* \`${postCharacter}\`` : "");
     paramsObj.parse_mode = "Markdown";
     paramsObj.chat_id = chatID;
     const params = querystring.stringify(paramsObj);
