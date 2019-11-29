@@ -145,7 +145,7 @@ function postTiddies (post, chatID, add = true) {
     const postArtist = clearUnderscore(post.tag_string_artist);
     const postCopyright = clearUnderscore(post.tag_string_copyright);
     const postCharacter = clearUnderscore(post.tag_string_character);
-    const extension = postUrl.split(".").pop();:
+    const extension = postUrl.split(".").pop();
     let command = "Photo";
     if (extension === "mp4" || extension === "gif") { command = "Video"; }
 
