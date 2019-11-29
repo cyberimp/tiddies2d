@@ -37,8 +37,6 @@ async function getTiddies (num, antibayan = true, cache = false) {
     if (antibayan)
         client.connect();
 
-    //let test = await booru.get("counts/posts", {tags: "solo breasts 1girl -loli score:>50"});
-    //console.log(test);
     let posts = [];
     const MAX = 3;
     let fail = false;
@@ -66,8 +64,10 @@ async function getTiddies (num, antibayan = true, cache = false) {
                                     console.log(result.message);
                                 }
                             },
-                            error => { if ("message" in error)
-					    console.error(error.message);}
+                            error => {
+                                if ("message" in error)
+                                    console.error(error.message);
+                            }
                         )
                 );
             }
