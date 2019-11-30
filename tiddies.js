@@ -26,7 +26,7 @@ function badExtension(str){
     return (!good.includes(ext));
 }
 
-async function getTiddies (num, antibayan = true, cache = false) {
+async function getTiddies (num, chatID = "", antibayan = true, cache = false) {
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
         ssl: true
@@ -47,6 +47,13 @@ async function getTiddies (num, antibayan = true, cache = false) {
             posts = JSON.parse(content);
         }
         catch(err){
+            const paramsObj = {};
+            paramsObj.chat_id = chatID;
+            paramsObj.text = "Я сплююю, ня~ Можно ещё минуточку поспать, можно, можно, можно?";
+            const params = querystring.stringify(paramsObj);
+            const url = "https://api.telegram.org/bot" + token +
+				"/sendMessage?" + params;
+            request(url);
             fail = true;
         }
     if (!cache||fail) {
@@ -174,7 +181,7 @@ function postTiddies (post, chatID, add = true) {
 }
 
 function doJob(num, chatID, antibayan= true, cache = false){
-    getTiddies(num, antibayan, cache).then((pairs) =>
+    getTiddies(num, chatID, antibayan, cache).then((pairs) =>
         pairs.forEach(post => postTiddies(post, chatID, antibayan)));
 }
 
