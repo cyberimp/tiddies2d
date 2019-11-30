@@ -78,7 +78,6 @@ async function getTiddies (num, chatID = "", antibayan = true, cache = false) {
                         )
                 );
             }
-            //we need to wait at least 1 sec between API calls
             promises.push(new Promise(resolve => setTimeout(resolve, 10)));
 
             await Promise.all(promises);
