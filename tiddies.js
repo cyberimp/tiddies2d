@@ -1,4 +1,9 @@
 "use strict";
+/**
+ * Tiddies seek and destroy^W post automata
+ * @module ./tiddies
+ */
+
 let Danbooru;
 Danbooru = require("danbooru");
 const fs = require("fs");
@@ -10,6 +15,21 @@ const login = process.env.BOORU_LOGIN;
 const password = process.env.BOORU_KEY;
 const token = process.env.TG_TOKEN;
 
+/**
+ * @name post - Danbooru post
+ * @property {number} id
+ * @property {URL} large_file_url
+ * @property {string} tag_string_artist
+ * @property {string} tag_string_copyright
+ * @property {string} tag_string_character
+ */
+
+/**
+ * checking if array already contains post
+ * @param obj {post} - object to check by id
+ * @param list {post[]} - array of objects
+ * @returns {boolean}
+ */
 function containsObject (obj, list) {
     let result = false;
     list.forEach((elem) => {
@@ -20,13 +40,63 @@ function containsObject (obj, list) {
     return result;
 }
 
+/**
+ * Check for extension of filename/url
+ * @param str {string} - filename
+ * @returns {boolean}
+ */
 function badExtension(str){
     const good = ["gif", "jpg", "jpeg", "png", "mp4"];
     const ext = str.split(".").pop();
     return (!good.includes(ext));
 }
 
-async function getTiddies (num, chatID = "", antibayan = true, cache = false) {
+/**
+ * Send text message to chat
+ * @param {string} text - text to send
+ * @param {number|string} chatID - id of chat
+ */
+function sendText(text, chatID){
+    const paramsObj = {};
+    paramsObj.chat_id = chatID;
+    paramsObj.text = text;
+    const params = querystring.stringify(paramsObj);
+    const url = "https://api.telegram.org/bot" + token +
+		"/sendMessage?" + params;
+    request(url);
+}
+
+/**
+ * Tries to merge two arrays
+ * @param arr1{post[]} - array to merge into
+ * @param arr2{post[]|*} - array to merge into or error object
+ */
+function mergeArrays(arr1, arr2){
+    if (Array.isArray(arr2)) {
+        arr1.push(...arr2);
+    } else {
+        console.log(arr2.message);
+    }
+}
+
+/**
+ * clears underscore and spaces in string
+ * @param {string} str
+ * @returns {string}
+ */
+function clearUnderscore (str) {
+    return str.replace(/ /g, "\n").replace(/_/g, " ");
+}
+
+/**
+ * Function that returns array of posts
+ * @param num{number} - size of array
+ * @param chatID{string|number} - chat to send await message
+ * @param antibayan {boolean=true} - use antibayan table for post querying
+ * @param cache {boolean=false} - use/save cache
+ * @returns {Promise<post[]>} array of posts with tiddies
+ */
+async function getTiddies (num, chatID, antibayan = true, cache = false) {
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
         ssl: true
@@ -47,13 +117,7 @@ async function getTiddies (num, chatID = "", antibayan = true, cache = false) {
             posts = JSON.parse(content);
         }
         catch(err){
-            const paramsObj = {};
-            paramsObj.chat_id = chatID;
-            paramsObj.text = "Я сплююю, ня~ Можно ещё минуточку поспать, можно, можно, можно?";
-            const params = querystring.stringify(paramsObj);
-            const url = "https://api.telegram.org/bot" + token +
-				"/sendMessage?" + params;
-            request(url);
+            sendText("Я сплююю, ня~ Можно ещё минуточку поспать, можно, можно, можно?", chatID);
             fail = true;
         }
     if (!cache||fail) {
@@ -64,13 +128,7 @@ async function getTiddies (num, chatID = "", antibayan = true, cache = false) {
                 promises.push(
                     booru.posts({limit: 100, page: i, tags: "solo breasts 1girl -loli score:>50"})
                         .then(
-                            result => {
-                                if (Array.isArray(result)) {
-                                    posts.push(...result);
-                                } else {
-                                    console.log(result.message);
-                                }
-                            },
+                            result => mergeArrays(posts, result),
                             error => {
                                 if ("message" in error)
                                     console.error(error.message);
@@ -120,10 +178,10 @@ async function getTiddies (num, chatID = "", antibayan = true, cache = false) {
     return tiddies;
 }
 
-function clearUnderscore (str) {
-    return str.replace(/ /g, "\n").replace(/_/g, " ");
-}
-
+/**
+ * Add post to database
+ * @param {post} post
+ */
 function addTiddies (post) {
     const postID = post.id;
     const client = new Client({
@@ -140,11 +198,9 @@ function addTiddies (post) {
 }
 
 /**
- * @param {{large_file_url:string},
- *          {tag_string_artist:string},
- *          {tag_string_copyright:string},
- *          {tag_string_character:string}} post - Danbooru post
- * @param {string} chatID - chat to post into
+ * post tiddies to chat
+ * @param {post} post - Danbooru post
+ * @param {string|number} chatID - chat to post into
  * @param {boolean} [add=true] - add to database
  */
 function postTiddies (post, chatID, add = true) {
@@ -179,6 +235,13 @@ function postTiddies (post, chatID, add = true) {
     }).catch((err) => console.error(err));
 }
 
+/**
+ * Main job of module of selecting tiddies from db and post them to chat
+ * @param num {number} - number of tiddies
+ * @param chatID {string|number} - chat to post to
+ * @param antibayan {boolean} - use antibayan database
+ * @param cache {boolean} - use hdd cache
+ */
 function doJob(num, chatID, antibayan= true, cache = false){
     getTiddies(num, chatID, antibayan, cache).then((pairs) =>
         pairs.forEach(post => postTiddies(post, chatID, antibayan)));
