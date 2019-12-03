@@ -16,7 +16,8 @@ const password = process.env.BOORU_KEY;
 const token = process.env.TG_TOKEN;
 
 /**
- * @name post - Danbooru post
+ * Danbooru post
+ * @name post
  * @property {number} id
  * @property {URL} large_file_url
  * @property {string} tag_string_artist
@@ -90,10 +91,10 @@ function clearUnderscore (str) {
 
 /**
  * Function that returns array of posts
- * @param num{number} - size of array
- * @param chatID{string|number} - chat to send await message
- * @param antibayan {boolean=true} - use antibayan table for post querying
- * @param cache {boolean=false} - use/save cache
+ * @param num {number} - size of array
+ * @param chatID {string|number} - chat to send await message
+ * @param [antibayan=true] {boolean} - use antibayan table for post querying
+ * @param [cache=false] {boolean} - use/save cache
  * @returns {Promise<post[]>} array of posts with tiddies
  */
 async function getTiddies (num, chatID, antibayan = true, cache = false) {
@@ -239,8 +240,8 @@ function postTiddies (post, chatID, add = true) {
  * Main job of module of selecting tiddies from db and post them to chat
  * @param num {number} - number of tiddies
  * @param chatID {string|number} - chat to post to
- * @param antibayan {boolean} - use antibayan database
- * @param cache {boolean} - use hdd cache
+ * @param [antibayan=true] {boolean} - use antibayan database
+ * @param [cache=false] {boolean} - use hdd cache
  */
 function doJob(num, chatID, antibayan= true, cache = false){
     getTiddies(num, chatID, antibayan, cache).then((pairs) =>
