@@ -146,6 +146,8 @@ async function getTiddies (num, chatID, antibayan = true, cache = false) {
             promises.push(new Promise(resolve => setTimeout(resolve, 10)));
 
             await Promise.all(promises);
+            if (cache)
+                sendBusy(chatID);
         }
         if (cache){
             try {
