@@ -52,19 +52,25 @@ function badExtension(str){
     return (!good.includes(ext));
 }
 
-/**
- * Send text message to chat
- * @param {string} text - text to send
- * @param {number|string} chatID - id of chat
- */
-function sendText(text, chatID){
-    const paramsObj = {};
-    paramsObj.chat_id = chatID;
-    paramsObj.text = text;
-    const params = querystring.stringify(paramsObj);
-    const url = "https://api.telegram.org/bot" + token +
-		"/sendMessage?" + params;
-    request(url);
+// /**
+//  * Send text message to chat
+//  * @param {string} text - text to send
+//  * @param {number|string} chatID - id of chat
+//  */
+// function sendText(text, chatID){
+//     const paramsObj = {};
+//     paramsObj.chat_id = chatID;
+//     paramsObj.text = text;
+//     const params = querystring.stringify(paramsObj);
+//     const url = "https://api.telegram.org/bot" + token +
+// 		"/sendMessage?" + params;
+//     request(url);
+// }
+
+function sendBusy(chatID){
+    const url = `https://api.telegram.org/bot${token}` +
+        `/sendChatAction?chat_id=${encodeURIComponent(chatID)}&action=upload_photo`;
+    request (url);
 }
 
 /**
@@ -118,7 +124,7 @@ async function getTiddies (num, chatID, antibayan = true, cache = false) {
             posts = JSON.parse(content);
         }
         catch(err){
-            sendText("Я сплююю, ня~ Можно ещё минуточку поспать, можно, можно, можно?", chatID);
+            sendBusy(chatID);
             fail = true;
         }
     if (!cache||fail) {
